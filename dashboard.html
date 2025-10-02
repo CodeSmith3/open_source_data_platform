@@ -1,425 +1,164 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Platform Syntrophos</title>
+    <title>Gemeente Data Platform</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg-primary: #000000;
-            --bg-secondary: #1c1c1e;
+            --bg-primary: #0a0e27;
+            --bg-card: #1e2139;
             --text-primary: #ffffff;
-            --text-secondary: #8e8e93;
-            --accent-blue: #0a84ff;
-            --accent-green: #30d158;
-            --accent-orange: #ff9f0a;
-            --accent-red: #ff453a;
+            --text-secondary: #8b92b8;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
-            background: var(--bg-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #151934 100%);
             color: var(--text-primary);
             min-height: 100vh;
-            overflow-x: hidden;
+            padding: 20px;
         }
-
-        /* Status Bar */
-        .status-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 44px;
-            background: rgba(28, 28, 30, 0.95);
-            backdrop-filter: blur(20px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 1000;
-            border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .status-time {
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        .status-indicators {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            font-size: 14px;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 64px 20px 100px;
-        }
-
-        /* Header */
+        .container { max-width: 1400px; margin: 0 auto; }
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--bg-card);
+            border-radius: 20px;
         }
-
         .header h1 {
-            font-size: 34px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #0a84ff 0%, #64d2ff 100%);
+            font-size: 42px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .header .subtitle {
-            font-size: 17px;
-            color: var(--text-secondary);
-        }
-
-        /* Stats Grid */
-        .stats-grid {
+        .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .stat-value.online { color: var(--accent-green); }
-        .stat-value.partial { color: var(--accent-orange); }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Section */
-        .section-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 40px 0 20px;
-            padding-left: 4px;
-        }
-
-        /* Apps Grid */
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
-            gap: 24px 16px;
-            margin-bottom: 40px;
-        }
-
-        .app-icon {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .app-icon:active {
-            transform: scale(0.9);
-        }
-
-        .icon-wrapper {
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            position: relative;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        }
-
-        .icon-wrapper::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 18px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
-        }
-
-        .status-dot {
-            position: absolute;
-            top: -3px;
-            right: -3px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            border: 2.5px solid var(--bg-primary);
-            z-index: 10;
-            animation: pulse 2s infinite;
-        }
-
-        .status-dot.online { background: var(--accent-green); }
-        .status-dot.offline { background: var(--accent-red); }
-        .status-dot.checking { background: var(--accent-orange); }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-
-        .app-name {
-            font-size: 12px;
-            text-align: center;
-            color: var(--text-primary);
-            max-width: 85px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            line-height: 1.3;
-        }
-
-        /* App Colors */
-        .app-postgres { background: linear-gradient(135deg, #336791 0%, #23527c 100%); }
-        .app-pgadmin { background: linear-gradient(135deg, #2F5C85 0%, #1e4166 100%); }
-        .app-minio { background: linear-gradient(135deg, #C72E49 0%, #a31f39 100%); }
-        .app-keycloak { background: linear-gradient(135deg, #008aaa 0%, #006b85 100%); }
-        .app-vault { background: linear-gradient(135deg, #FFD814 0%, #f8b500 100%); }
-        .app-redis { background: linear-gradient(135deg, #DC382D 0%, #b82b22 100%); }
-        .app-apisix { background: linear-gradient(135deg, #E43C5C 0%, #c2304a 100%); }
-        .app-superset { background: linear-gradient(135deg, #20A7C9 0%, #1a8ba5 100%); }
-        .app-airflow { background: linear-gradient(135deg, #017CEE 0%, #0062c4 100%); }
-        .app-qgis { background: linear-gradient(135deg, #589632 0%, #3f6d24 100%); }
-        .app-prometheus { background: linear-gradient(135deg, #E6522C 0%, #c2451f 100%); }
-        .app-grafana { background: linear-gradient(135deg, #F46800 0%, #d35400 100%); }
-        .app-loki { background: linear-gradient(135deg, #F46800 0%, #d35400 100%); }
-        .app-etcd { background: linear-gradient(135deg, #419EDA 0%, #2980b9 100%); }
-
-        /* Dock */
-        .dock {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(28, 28, 30, 0.8);
-            backdrop-filter: blur(30px);
-            border-radius: 24px;
-            padding: 12px 20px;
-            display: flex;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
         }
-
-        .dock-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
+        .stat-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
         }
-
-        .dock-icon::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
-        }
-
-        .dock-icon:hover {
-            transform: translateY(-8px) scale(1.1);
-        }
-
-        .dock-icon:active {
-            transform: scale(0.95);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.2s ease;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-size: 24px;
+        .stat-value {
+            font-size: 36px;
             font-weight: 700;
-        }
-
-        .modal-close {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: var(--text-primary);
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .credential-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border-left: 3px solid var(--accent-blue);
-        }
-
-        .credential-service {
-            font-weight: 600;
             margin-bottom: 8px;
-            font-size: 16px;
         }
-
-        .credential-details {
-            font-family: 'SF Mono', 'Monaco', monospace;
+        .stat-value.online { color: var(--accent-green); }
+        .stat-label {
             font-size: 14px;
             color: var(--text-secondary);
+            text-transform: uppercase;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .apps-grid {
-                grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-                gap: 20px 12px;
-            }
-
-            .icon-wrapper {
-                width: 65px;
-                height: 65px;
-            }
-
-            .dock {
-                gap: 16px;
-                padding: 10px 16px;
-            }
-
-            .dock-icon {
-                width: 55px;
-                height: 55px;
-            }
+        .section { margin-bottom: 50px; }
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
         }
-
-        /* Loading spinner */
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: var(--text-primary);
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .service-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.2);
+        }
+        .service-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .service-icon { font-size: 48px; }
+        .service-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .service-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        .service-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: pulse 2s infinite;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .service-status.online {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+        }
+        .service-status.online .status-dot { background: var(--accent-green); }
+        .service-status.offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+        }
+        .service-status.offline .status-dot { background: var(--accent-red); }
+        .service-url {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+        }
+        .quick-actions {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+        }
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
         }
     </style>
 </head>
 <body>
-    <!-- Status Bar -->
-    <div class="status-bar">
-        <div class="status-time" id="statusTime">12:00</div>
-        <div class="status-indicators">
-            <span id="onlineCount">0</span>/<span id="totalCount">0</span>
-            <span style="color: var(--accent-green)">●</span>
-        </div>
-    </div>
-
-    <!-- Main Container -->
     <div class="container">
-        <!-- Header -->
         <div class="header">
-            <h1>Data Platform</h1>
-            <div class="subtitle">Syntrophos</div>
+            <h1>Gemeente Data Platform</h1>
+            <div style="color: var(--text-secondary); margin-top: 10px;">Centrale toegang tot alle data services</div>
         </div>
 
-        <!-- Stats -->
-        <div class="stats-grid">
+        <div class="stats">
             <div class="stat-card">
                 <div class="stat-value online" id="statOnline">0</div>
                 <div class="stat-label">Online</div>
@@ -429,324 +168,136 @@
                 <div class="stat-label">Offline</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="statUptime">100%</div>
+                <div class="stat-value" id="statUptime">0%</div>
                 <div class="stat-label">Uptime</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="statLastCheck">-</div>
-                <div class="stat-label">Last Check</div>
-            </div>
         </div>
 
-        <!-- Data & Storage -->
-        <div class="section-title">💾 Data & Storage</div>
-        <div class="apps-grid">
-            <a class="app-icon" href="http://localhost:20432" target="_blank" data-service="postgres">
-                <div class="icon-wrapper app-postgres">
-                    <span class="status-dot checking" id="status-postgres"></span>
-                    🐘
-                </div>
-                <div class="app-name">PostgreSQL</div>
-            </a>
-
-            <a class="app-icon" href="http://localhost:8081" target="_blank" data-service="pgadmin">
-                <div class="icon-wrapper app-pgadmin">
-                    <span class="status-dot checking" id="status-pgadmin"></span>
-                    🗄️
-                </div>
-                <div class="app-name">pgAdmin</div>
-            </a>
-
-            <a class="app-icon" href="http://localhost:9001" target="_blank" data-service="minio">
-                <div class="icon-wrapper app-minio">
-                    <span class="status-dot checking" id="status-minio"></span>
-                    🪣
-                </div>
-                <div class="app-name">MinIO</div>
-            </a>
-
-            <a class="app-icon" href="http://localhost:20379" target="_blank" data-service="redis">
-                <div class="icon-wrapper app-redis">
-                    <span class="status-dot checking" id="status-redis"></span>
-                    ⚡
-                </div>
-                <div class="app-name">Redis</div>
-            </a>
-
-            <a class="app-icon" href="http://localhost:2379" target="_blank" data-service="etcd">
-                <div class="icon-wrapper app-etcd">
-                    <span class="status-dot checking" id="status-etcd"></span>
-                    🔧
-                </div>
-                <div class="app-name">etcd</div>
-            </a>
+        <div class="section">
+            <h2 class="section-title">Business Intelligence</h2>
+            <div class="services-grid" id="biServices"></div>
         </div>
 
-        <!-- Analytics & BI -->
-        <div class="section-title">📊 Analytics & BI</div>
-        <div class="apps-grid">
-            <a class="app-icon" href="http://localhost:8088" target="_blank" data-service="superset">
-                <div class="icon-wrapper app-superset">
-                    <span class="status-dot checking" id="status-superset"></span>
-                    📈
-                </div>
-                <div class="app-name">Superset</div>
-            </a>
-
-            <a class="app-icon" href="http://localhost:8082" target="_blank" data-service="airflow">
-                <div class="icon-wrapper app-airflow">
-                    <span class="status-dot checking" id="status-airflow"></span>
-                    🌊
-                </div>
-                <div class="app-name">Airflow</div>
-            </a>
-
-            <a class="app-icon" href="http://localhost:8090" target="_blank" data-service="qgis">
-                <div class="icon-wrapper app-qgis">
-                    <span class="status-dot checking" id="status-qgis"></span>
-                    🗺️
-                </div>
-                <div class="app-name">QGIS Server</div>
-            </a>
+        <div class="section">
+            <h2 class="section-title">Data Management</h2>
+            <div class="services-grid" id="dataServices"></div>
         </div>
 
-        <!-- Security -->
-        <div class="section-title">🔐 Security & Identity</div>
-        <div class="apps-grid">
-            <a class="app-icon" href="http://localhost:8085" target="_blank" data-service="keycloak">
-                <div class="icon-wrapper app-keycloak">
-                    <span class="status-dot checking" id="status-keycloak"></span>
-                    🔑
-                </div>
-                <div class="app-name">Keycloak</div>
-            </a>
-
-            <a class="app-icon" href="http://localhost:8200" target="_blank" data-service="vault">
-                <div class="icon-wrapper app-vault">
-                    <span class="status-dot checking" id="status-vault"></span>
-                    🔒
-                </div>
-                <div class="app-name">Vault</div>
-            </a>
-
-            <a class="app-icon" href="http://localhost:9080" target="_blank" data-service="apisix">
-                <div class="icon-wrapper app-apisix">
-                    <span class="status-dot checking" id="status-apisix"></span>
-                    🌐
-                </div>
-                <div class="app-name">APISIX</div>
-            </a>
+        <div class="section">
+            <h2 class="section-title">Security & Identity</h2>
+            <div class="services-grid" id="securityServices"></div>
         </div>
 
-        <!-- Monitoring -->
-        <div class="section-title">📈 Monitoring</div>
-        <div class="apps-grid">
-            <a class="app-icon" href="http://localhost:13000" target="_blank" data-service="grafana">
-                <div class="icon-wrapper app-grafana">
-                    <span class="status-dot checking" id="status-grafana"></span>
-                    📊
-                </div>
-                <div class="app-name">Grafana</div>
-            </a>
-
-            <a class="app-icon" href="http://localhost:9090" target="_blank" data-service="prometheus">
-                <div class="icon-wrapper app-prometheus">
-                    <span class="status-dot checking" id="status-prometheus"></span>
-                    🔥
-                </div>
-                <div class="app-name">Prometheus</div>
-            </a>
-
-            <a class="app-icon" href="http://localhost:3100" target="_blank" data-service="loki">
-                <div class="icon-wrapper app-loki">
-                    <span class="status-dot checking" id="status-loki"></span>
-                    📝
-                </div>
-                <div class="app-name">Loki</div>
-            </a>
+        <div class="section">
+            <h2 class="section-title">Monitoring</h2>
+            <div class="services-grid" id="monitoringServices"></div>
         </div>
     </div>
 
-    <!-- Dock -->
-    <div class="dock">
-        <div class="dock-icon app-superset" onclick="openService('http://localhost:8088')">
-            📈
-        </div>
-        <div class="dock-icon app-airflow" onclick="openService('http://localhost:8082')">
-            🌊
-        </div>
-        <div class="dock-icon app-grafana" onclick="openService('http://localhost:13000')">
-            📊
-        </div>
-        <div class="dock-icon app-keycloak" onclick="showCredentials()">
-            🔑
-        </div>
-    </div>
-
-    <!-- Credentials Modal -->
-    <div class="modal" id="credentialsModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">🔑 Credentials</div>
-                <button class="modal-close" onclick="closeModal()">✕</button>
-            </div>
-            
-            <div class="credential-item">
-                <div class="credential-service">Default Login</div>
-                <div class="credential-details">Username: admin<br>Password: admin123</div>
-            </div>
-
-            <div class="credential-item">
-                <div class="credential-service">PostgreSQL</div>
-                <div class="credential-details">
-                    Host: localhost:20432<br>
-                    User: gemeente<br>
-                    Password: gemeente123
-                </div>
-            </div>
-
-            <div class="credential-item">
-                <div class="credential-service">MinIO</div>
-                <div class="credential-details">
-                    User: minioadmin<br>
-                    Password: minioadmin123
-                </div>
-            </div>
-
-            <div class="credential-item">
-                <div class="credential-service">Keycloak Admin</div>
-                <div class="credential-details">
-                    User: admin<br>
-                    Password: admin123
-                </div>
-            </div>
-
-            <div class="credential-item">
-                <div class="credential-service">Vault Token</div>
-                <div class="credential-details">Root Token: myroot</div>
-            </div>
-
-            <div class="credential-item">
-                <div class="credential-service">Redis</div>
-                <div class="credential-details">Password: redis123</div>
-            </div>
-        </div>
+    <div class="quick-actions">
+        <button class="action-btn" onclick="refreshStatus()" title="Refresh Status">&#8635;</button>
     </div>
 
     <script>
-        const services = [
-            { id: 'postgres', url: null, port: 20432 },
-            { id: 'pgadmin', url: 'http://localhost:8081/misc/ping', port: 8081 },
-            { id: 'minio', url: 'http://localhost:9001', port: 9001 },
-            { id: 'redis', url: null, port: 20379 },
-            { id: 'etcd', url: null, port: 2379 },
-            { id: 'superset', url: 'http://localhost:8088/health', port: 8088 },
-            { id: 'airflow', url: 'http://localhost:8082/health', port: 8082 },
-            { id: 'qgis', url: 'http://localhost:8090', port: 8090 },
-            { id: 'keycloak', url: 'http://localhost:8085/health/ready', port: 8085 },
-            { id: 'vault', url: 'http://localhost:8200/v1/sys/health', port: 8200 },
-            { id: 'apisix', url: null, port: 9080 },
-            { id: 'grafana', url: 'http://localhost:13000/api/health', port: 13000 },
-            { id: 'prometheus', url: 'http://localhost:9090/-/healthy', port: 9090 },
-            { id: 'loki', url: 'http://localhost:3100/ready', port: 3100 }
-        ];
+        const services = {
+            bi: [
+                { id: 'superset', name: 'Apache Superset', icon: '&#128202;', desc: 'BI & Visualisatie', port: 8088, health: '/health' },
+                { id: 'airflow', name: 'Apache Airflow', icon: '&#127754;', desc: 'Data Pipelines', port: 8082, health: '/health' }
+            ],
+            data: [
+                { id: 'pgadmin', name: 'pgAdmin', icon: '&#128024;', desc: 'Database Admin', port: 8081, health: '/misc/ping' },
+                { id: 'minio', name: 'MinIO Console', icon: '&#129683;', desc: 'Object Storage', port: 9001, health: '/minio/health/live' }
+            ],
+            security: [
+                { id: 'keycloak', name: 'Keycloak', icon: '&#128273;', desc: 'SSO & Identity', port: 8085, health: '/health/ready' },
+                { id: 'vault', name: 'Vault', icon: '&#128274;', desc: 'Secrets Management', port: 8200, health: '/v1/sys/health' },
+                { id: 'apisix', name: 'APISIX Dashboard', icon: '&#127760;', desc: 'API Gateway', port: 9000, health: '/' }
+            ],
+            monitoring: [
+                { id: 'grafana', name: 'Grafana', icon: '&#128200;', desc: 'Monitoring', port: 13000, health: '/api/health' },
+                { id: 'prometheus', name: 'Prometheus', icon: '&#128293;', desc: 'Metrics', port: 9090, health: '/-/healthy' },
+                { id: 'dashboard', name: 'Dashboard', icon: '&#127968;', desc: 'Platform Overview', port: 8888, health: '/' }
+            ]
+        };
 
         let onlineCount = 0;
-        let totalCount = services.length;
+        let totalCount = 0;
 
-        // Update time
-        function updateTime() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('statusTime').textContent = `${hours}:${minutes}`;
-            
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('statLastCheck').textContent = `${hours}:${minutes}:${seconds}`;
+        Object.values(services).forEach(cat => totalCount += cat.length);
+
+        function createServiceCard(service) {
+            const url = `http://localhost:${service.port}`;
+            return `
+                <div class="service-card" onclick="openService('${url}')" data-service="${service.id}">
+                    <div class="service-header">
+                        <div class="service-icon">${service.icon}</div>
+                        <div>
+                            <div class="service-name">${service.name}</div>
+                        </div>
+                    </div>
+                    <div class="service-desc">${service.desc}</div>
+                    <div class="service-status checking" id="status-${service.id}">
+                        <div class="status-dot"></div>
+                        <span>Checking...</span>
+                    </div>
+                    <div class="service-url">${url}</div>
+                </div>
+            `;
         }
 
-        // Check service status
-        async function checkService(service) {
-            const statusDot = document.getElementById(`status-${service.id}`);
-            
-            if (!service.url) {
-                // Services without health check - assume online
-                statusDot.className = 'status-dot online';
-                return true;
-            }
+        function renderServices() {
+            document.getElementById('biServices').innerHTML = services.bi.map(createServiceCard).join('');
+            document.getElementById('dataServices').innerHTML = services.data.map(createServiceCard).join('');
+            document.getElementById('securityServices').innerHTML = services.security.map(createServiceCard).join('');
+            document.getElementById('monitoringServices').innerHTML = services.monitoring.map(createServiceCard).join('');
+        }
 
+        async function checkService(service) {
+            const statusEl = document.getElementById(`status-${service.id}`);
+            const url = `http://localhost:${service.port}${service.health}`;
+            
             try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3000);
-                
-                await fetch(service.url, {
-                    method: 'GET',
-                    mode: 'no-cors',
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                statusDot.className = 'status-dot online';
+                const response = await fetch(url, { method: 'GET', mode: 'no-cors', cache: 'no-cache' });
+                statusEl.className = 'service-status online';
+                statusEl.innerHTML = '<div class="status-dot"></div><span>Online</span>';
                 return true;
             } catch (error) {
-                statusDot.className = 'status-dot offline';
+                statusEl.className = 'service-status offline';
+                statusEl.innerHTML = '<div class="status-dot"></div><span>Offline</span>';
                 return false;
             }
         }
 
-        // Check all services
         async function checkAllServices() {
             onlineCount = 0;
+            const allServices = [...services.bi, ...services.data, ...services.security, ...services.monitoring];
             
-            const results = await Promise.all(
-                services.map(service => checkService(service))
-            );
+            const results = await Promise.all(allServices.map(async service => {
+                const isOnline = await checkService(service);
+                if (isOnline) onlineCount++;
+                return isOnline;
+            }));
             
-            onlineCount = results.filter(r => r).length;
-            
-            // Update stats
             document.getElementById('statOnline').textContent = onlineCount;
             document.getElementById('statOffline').textContent = totalCount - onlineCount;
-            document.getElementById('onlineCount').textContent = onlineCount;
-            document.getElementById('totalCount').textContent = totalCount;
             
             const uptime = Math.round((onlineCount / totalCount) * 100);
             document.getElementById('statUptime').textContent = uptime + '%';
         }
 
-        // Open service
         function openService(url) {
             window.open(url, '_blank');
         }
 
-        // Show credentials
-        function showCredentials() {
-            document.getElementById('credentialsModal').classList.add('active');
-        }
-
-        // Close modal
-        function closeModal() {
-            document.getElementById('credentialsModal').classList.remove('active');
-        }
-
-        // Close modal on background click
-        document.getElementById('credentialsModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-
-        // Initialize
-        function init() {
-            updateTime();
-            setInterval(updateTime, 1000);
-            
+        function refreshStatus() {
             checkAllServices();
-            setInterval(checkAllServices, 30000); // Check every 30 seconds
         }
 
-        // Start
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', function() {
+            renderServices();
+            checkAllServices();
+            setInterval(checkAllServices, 30000);
+        });
     </script>
 </body>
 </html>

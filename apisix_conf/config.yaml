@@ -1,4 +1,4 @@
-apisix:
+﻿apisix:
   node_listen: 9080
   enable_admin: true
   enable_admin_cors: true
