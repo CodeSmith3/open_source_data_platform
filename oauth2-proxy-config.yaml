@@ -1,0 +1,10 @@
+upstreams:
+  - id: prometheus
+    path: /prometheus/
+    uri: http://prometheus:9090
+  - id: elasticsearch  
+    path: /elasticsearch/
+    uri: http://elasticsearch:9200
+  - id: loki
+    path: /loki/
+    uri: http://loki:3100

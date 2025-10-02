@@ -1,0 +1,27 @@
+﻿# Environment files met passwords
+.env
+.env.local
+.env.production
+*.env
+
+# Backup folders
+backup-*/
+archived-scripts-*/
+platform-backup-*/
+*-backup-*/
+
+# Docker volumes
+data/
+volumes/
+
+# Logs
+*.log
+logs/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

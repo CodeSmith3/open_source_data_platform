@@ -1,0 +1,46 @@
+# ===================================
+# Superset Configuration
+# Mode: development
+# Generated: Tue Sep 30 12:19:16 PM CEST 2025
+# ===================================
+
+# Security
+SECRET_KEY = 'DevKey2024SecureForGemeente'
+
+# Database connection
+SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://superset:superset123@gemeente_postgres:5432/superset'
+
+# SQL Lab settings
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# CSRF Protection - DISABLED for development
+WTF_CSRF_ENABLED = False
+WTF_CSRF_TIME_LIMIT = None
+
+# Session settings - relaxed for development
+SESSION_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+# Cache configuration (optional)
+CACHE_CONFIG = {
+    'CACHE_TYPE': 'SimpleCache',
+    'CACHE_DEFAULT_TIMEOUT': 300
+}
+
+# Feature flags
+FEATURE_FLAGS = {
+    'ENABLE_TEMPLATE_PROCESSING': True,
+}
+
+# Logging
+import logging
+LOG_LEVEL = logging.INFO
+
+# Custom message
+print("=" * 60)
+print("SUPERSET CONFIG LOADED")
+print(f"Mode: development")
+print(f"Database: superset@gemeente_postgres/superset")
+print(f"CSRF: Disabled")
+print("=" * 60)

@@ -1,0 +1,25 @@
+conf:
+  listen:
+    host: 0.0.0.0
+    port: 9000
+  etcd:
+    endpoints:
+      - "http://etcd:2379"
+    prefix: /apisix
+    timeout: 30s
+  log:
+    error_log:
+      level: warn
+      file_path: logs/error.log
+    access_log:
+      file_path: logs/access.log
+  max_cpu: 0
+  security:
+    content_security_policy: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src *"
+
+authentication:
+  secret: secret
+  expire_time: 3600
+  users:
+    - username: admin
+      password: admin

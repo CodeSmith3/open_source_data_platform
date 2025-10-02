@@ -1,0 +1,4 @@
+SECRET_KEY = 'ThisIsASecureKeyForDevelopment2024ChangeInProduction'
+SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://superset:superset123@gemeente_postgres:5432/superset'
+WTF_CSRF_ENABLED = True
+SQLALCHEMY_TRACK_MODIFICATIONS = False
