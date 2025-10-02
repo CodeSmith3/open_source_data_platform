@@ -218,7 +218,7 @@ services:
       retries: 5
   
   spark-master:
-    image: bitnami/spark:latest
+    image: apache/spark:3.5.2
     container_name: gemeente_spark-master
     restart: always
     environment:
@@ -246,7 +246,7 @@ services:
       retries: 3
   
   spark-worker:
-    image: bitnami/spark:latest
+    image: apache/spark:3.5.2
     container_name: gemeente_spark-worker
     restart: always
     environment:
@@ -273,7 +273,7 @@ services:
           memory: 1G
   
   etcd:
-    image: docker.io/bitnamilegacy
+    image: quay.io/coreos/etcd:v3.5.17
     container_name: gemeente_etcd
     restart: always
     environment:
@@ -284,7 +284,7 @@ services:
     ports:
     - 2379:2379
     volumes:
-    - etcd_data:/bitnami/etcd
+    - etcd_data:/etcd
     networks:
     - backend
   
