@@ -25,3 +25,10 @@ logs/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Cleanup artifacts
+CLEANUP_*.md
+CLEANUP_COMPLETE.md
+final-backup-*/
+ultimate-cleanup-report.md
+
