@@ -1,3 +1,0 @@
-#!/bin/bash
-# Setup permissions script
-# ...set permissions logic...

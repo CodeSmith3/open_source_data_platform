@@ -1,4 +1,4 @@
-﻿# Environment files met passwords
+# Environment files met passwords
 .env
 .env.local
 .env.production

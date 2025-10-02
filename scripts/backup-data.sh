@@ -1,3 +1,0 @@
-#!/bin/bash
-# Backup data script
-# ...backup logic...
