@@ -395,6 +395,28 @@ services:
   # ADMIN TOOLS
   # ===================================
   
+  # ===================================
+  # DASHBOARD
+  # ===================================
+  
+  dashboard:
+    image: nginx:alpine
+    container_name: gemeente_dashboard
+    restart: always
+    ports:
+      - "8888:80"
+    volumes:
+      - ./dashboard.html:/usr/share/nginx/html/index.html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: gemeente_pgadmin
